@@ -45,7 +45,7 @@ angular.module('availability-calendar', [])
 				el.addClass(c);
 			}
 		}
-	},
+	}
 })
 
 // # availability-date component
@@ -90,10 +90,10 @@ function availabilityCalendarDirective () {
 			//   - `appendTo`: A string of value `'body'` or `'element'` that indicates
 			//     where to append the calendar.
 			//   - `position`: TODO
-			//   - `onSelectFocus`: an id or element to focus after a selction has been
+			//   - `onSelectFocus`: an id or element to focus after a selection has been
 			//     made. If `null` the input will be blurred.
-			availabilityCalendarOptions: '&',
-			// - `selectable-month` (optional) if defined, it indicates wether the month
+			availabilityCalendarOptions: '&'
+			// - `selectable-month` (optional) if defined, it indicates weather the month
 			//   and year label should be selectable.
 			// - `on-date-<event>` are (optional) expressions that will be attached to
 			//   each enabled date DOM element when the DOM `<event>` is triggered.
@@ -101,7 +101,7 @@ function availabilityCalendarDirective () {
 		controller: availabilityCalendarController,
 		controllerAs: 'ctrl',
 		bindToController: true,
-		link: availabilityCalendarLink,
+		link: availabilityCalendarLink
 	};
 }
 
@@ -113,19 +113,22 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		ctrl.decorateHandlers()
 	);
 	var dateEvents = [];
-	var originalCalendarBodyCellClass = ''; // TODO this restore a day element class to its original one. shold be done for each attribute
+	var originalCalendarBodyCellClass = ''; // TODO this restore a day element class to its original one. should be done for each attribute
+
+
+
 	var calendarElements = buildCalendar({
 		calendar: generateElement('wrapper'),
 		prevButton: generateElement('prevButton', true),
 		nextButton: generateElement('nextButton', true),
 		title: generateElement('title', true),
-		// monthSlect: a selectMonthTemplate element
+		// monthSelect: a selectMonthTemplate element
 		// yearSelect: a selectYearTemplate element
 		table: generateElement('calendarTable'),
 		header: generateElement('calendarHeader', true),
 		// headerRow: one calendarBodyRowTemplate element inserted into header
 		// headerCells: array of 7 calendarHeaderCellTemplate elements inserted into headerRow
-		body: generateElement('calendarBody'),
+		body: generateElement('calendarBody')
 		// weeks: array of 6 calendarBodyRowTemplate elements inserted into body
 		// days: array of 42 calendarBodyCellTemplate elements inserted into weeks
 		// weekDays: two dimensional array with 5 (weeks) * 7 days
