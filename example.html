@@ -21,7 +21,8 @@
 			}"
 			decorate-date="ctrl.decorateCalendarDate($date, $fetchedData)"
 			on-date-click="ctrl.clickCalendarDate($event, $date, $decorations, $calendar)"
-			on-date-mouseenter="ctrl.enterCalendarDate($date, $decorations, $calendar)"></availability-calendar>
+			on-date-mouseenter="ctrl.enterCalendarDate($date, $decorations, $calendar)">
+        </availability-calendar>
 
 	</div>
 
@@ -29,89 +30,140 @@
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="availability-calendar.js"></script>
 	<script>
-	angular
-		.module('example-app', ['availability-calendar'])
-		.config(['availabilityCalendarConfig', function (availabilityCalendarConfig) {
-			angular.extend(availabilityCalendarConfig, {
-				wrapperTemplate: '<div class="calendar"></div>',
-				prevButtonTemplate: '<a href="" class="calendar-prev-button" tabindex="-1"><i class="fa fa-chevron-left"></i></a>',
-				nextButtonTemplate: '<a href="" class="calendar-next-button" tabindex="-1"><i class="fa fa-chevron-right"></i></a>',
-				titleTemplate: '<div class="calendar-title"></div>',
-				calendarTableTemplate: '<table class="calendar-table" cellspacing="0" cellpadding="0"></table>',
-				calendarHeaderTemplate: '<thead class="calendar-header"></thead>',
-				calendarHeaderRowTemplate: '<tr class="calendar-week"></tr>',
-				calendarHeaderCellTemplate: '<th class="calendar-day"></th>',
-				calendarBodyTemplate: '<tbody class="calendar-body"></tbody>',
-				calendarBodyRowTemplate: '<tr class="calendar-week"></tr>',
-				calendarBodyCellTemplate: '<td class="calendar-day"></td>'
-			});
-		}])
-		.controller('example-ctrl', function ExampleCtrl () {
-			var ctrl = this;
+        angular
+            .module('example-app', [
+                    'availability-calendar'
+                ]
+            )
+            .config(exampleConfig)
+            .controller('example-ctrl', ExampleCtrl);
 
-			ctrl.refreshCalendar = function () {
-				throw new Error('This will be initialized by the calendar component');
-			};
-			ctrl.fetchCalendarDates = fetchCalendarDates;
-			ctrl.decorateCalendarDate = decorateCalendarDate;
-			ctrl.clickCalendarDate = clickCalendarDate;
-			ctrl.enterCalendarDate = enterCalendarDate;
-			ctrl.calendarPriceLabelDecorator = calendarPriceLabelDecorator;
-			ctrl.calendarBookingLabelDecorator = calendarBookingLabelDecorator;
 
-			// This will be called when data for the given date period is needed
-			// The return of this function can be anything and any form of cacheing
-			// has to be handled manually in this method as well.
-			// The `decorate-date` attribute will receive `$fetchedData` with the
-			// result of this method.
-			function fetchCalendarDates ($fromDate, $toDate) {
-				var fromDate = moment($fromDate).startOf('month').toDate();
-				var toDate = moment($toDate).endOf('month').toDate();
-				return {
-					fromDate: fromDate,
-					toDate: toDate,
-					someOtherData: [],
-				};
-			}
+            function exampleConfig(availabilityCalendarConfig){
 
-			// TODO: document meaning
-			function decorateCalendarDate ($date, $fetchResult) {
-				var decorations = {
-					'class': [],
-					available: false,
-				};
-				return decorations;
-			}
+                angular.extend(availabilityCalendarConfig, {
+                    wrapperTemplate: '<div class="calendar"></div>',
+                    prevButtonTemplate: '<a href="" class="calendar-prev-button" tabindex="-1"><i class="fa fa-chevron-left"></i></a>',
+                    nextButtonTemplate: '<a href="" class="calendar-next-button" tabindex="-1"><i class="fa fa-chevron-right"></i></a>',
+                    titleTemplate: '<div class="calendar-title"></div>',
+                    calendarTableTemplate: '<table class="calendar-table" cellspacing="0" cellpadding="0"></table>',
+                    calendarHeaderTemplate: '<thead class="calendar-header"></thead>',
+                    calendarHeaderRowTemplate: '<tr class="calendar-week"></tr>',
+                    calendarHeaderCellTemplate: '<th class="calendar-day"></th>',
+                    calendarBodyTemplate: '<tbody class="calendar-body"></tbody>',
+                    calendarBodyRowTemplate: '<tr class="calendar-week"></tr>',
+                    calendarBodyCellTemplate: '<td class="calendar-day"></td>'
+                });
 
-			// TODO: document meaning
-			function clickCalendarDate ($event, $date, $decorations, $calendar) {
-				if ($decorations.disabled || $decorations.booking) {
-					return;
-				}
-				$event.preventDefault();
-				// TODO: try to implement a "select" decoration
-				// see $calendar.updateCalendar(from, to);
-			}
+            }
 
-			function enterCalendarDate ($date, $decorations, $calendar) {
-				if ($decorations.disabled) {
-					return;
-				}
-				// TODO: update "select" decoration
-			}
+            exampleConfig.$inject = ['availabilityCalendarConfig'];
 
-			function calendarPriceLabelDecorator (val, el, date) {
-				if (val) {
-					el.append('<span class="priceLabel">' + val + '</span>');
-				}
-			}
+            function ExampleCtrl(){
 
-			function calendarBookingLabelDecorator (val, el, date) {
-				if (val) {
-					el.append('<a href="/somewhere/' + val + '" class="fa fa-info-circle" target="_blank"></a>');
-				}
-			}
-		});
+                var ctrl = this;
+
+                ctrl.refreshCalendar = function () {
+                    throw new Error('This will be initialized by the calendar component');
+                };
+
+                ctrl.fetchCalendarDates = fetchCalendarDates;
+                ctrl.decorateCalendarDate = decorateCalendarDate;
+                ctrl.clickCalendarDate = clickCalendarDate;
+                ctrl.enterCalendarDate = enterCalendarDate;
+                ctrl.calendarPriceLabelDecorator = calendarPriceLabelDecorator;
+                ctrl.calendarBookingLabelDecorator = calendarBookingLabelDecorator;
+
+
+                ////////////////
+
+                // This will be called when data for the given date period is needed
+                // The return of this function can be anything and any form of cacheing
+                // has to be handled manually in this method as well.
+                // The `decorate-date` attribute will receive `$fetchedData` with the
+                // result of this method.
+                function fetchCalendarDates ($fromDate, $toDate) {
+                    var fromDate = moment($fromDate).startOf('month').toDate();
+                    var toDate = moment($toDate).endOf('month').toDate();
+                    return {
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        someOtherData: []
+                    };
+                }
+
+
+                /**
+                 * TODO: document meaning
+                 * @param $date
+                 * @param $fetchResult
+                 * @returns {{class: Array, available: boolean}}
+                 */
+                function decorateCalendarDate ($date, $fetchResult) {
+                    var decorations = {
+                        'class': [],
+                        available: false,
+                    };
+                    return decorations;
+                }
+
+
+                /**
+                 * TODO: document meaning
+                 * @param $event
+                 * @param $date
+                 * @param $decorations
+                 * @param $calendar
+                 */
+                function clickCalendarDate ($event, $date, $decorations, $calendar) {
+                    if ($decorations.disabled || $decorations.booking) {
+                        return;
+                    }
+                    $event.preventDefault();
+                    // TODO: try to implement a "select" decoration
+                    // see $calendar.updateCalendar(from, to);
+                }
+
+                /**
+                 * TODO: document meaning
+                 * @param $date
+                 * @param $decorations
+                 * @param $calendar
+                 */
+                function enterCalendarDate ($date, $decorations, $calendar) {
+                    if ($decorations.disabled) {
+                        return;
+                    }
+                    // TODO: update "select" decoration
+                }
+
+                /**
+                 * TODO: document meaning
+                 * @param val
+                 * @param el
+                 * @param date
+                 */
+                function calendarPriceLabelDecorator (val, el, date) {
+                    if (val) {
+                        el.append('<span class="priceLabel">' + val + '</span>');
+                    }
+                }
+
+                /**
+                 * TODO: document meaning
+                 * @param val
+                 * @param el
+                 * @param date
+                 */
+                function calendarBookingLabelDecorator (val, el, date) {
+                    if (val) {
+                        el.append('<a href="/somewhere/' + val + '" class="fa fa-info-circle" target="_blank"></a>');
+                    }
+                }
+
+        }
+
+
 	</script>
 </body>
 </html>
