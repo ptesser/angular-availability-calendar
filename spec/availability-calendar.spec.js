@@ -23,4 +23,6 @@ describe('availability-calendar', function() {
 
 	});
 
+
+
 });

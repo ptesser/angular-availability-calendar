@@ -3,54 +3,57 @@
 
 // TODO: document everything
 // TODO: check that https://github.com/johnpapa/angular-styleguide is followed
-angular.module('availability-calendar', [])
+angular
+	.module('availability-calendar', [])
 
-.constant('availabilityCalendarConfig', {
-	wrapperTemplate: '<div class="availability-calendar"></div>',
-	prevButtonTemplate: '<a href="" class="availability-calendar-prev-button">&lt;</a>',
-	nextButtonTemplate: '<a href="" class="availability-calendar-next-button">&gt;</a>',
-	titleTemplate: '<div class="availability-calendar-title"></div>',
-	monthSelectTemplate: '<select class="availability-calendar-month-select"></select>',
-	yearSelectTemplate: '<select class="availability-calendar-year-select"></select>',
-	calendarTableTemplate: '<table class="availability-calendar-table"></table>',
-	calendarHeaderTemplate: '<thead></thead>',
-	calendarHeaderRowTemplate: '<tr></tr>',
-	calendarHeaderCellTemplate: '<th></th>',
-	calendarBodyTemplate: '<tbody></tbody>',
-	calendarBodyRowTemplate: '<tr></tr>',
-	calendarBodyCellTemplate: '<td></td>',
-	calendarBodyCellLabelTemplate: '<span class="availability-calendar-day-label"></span>',
-	wrapperLoadingClass: 'loading',
-	disabledDayClass: 'disabled',
-	defaultDayDecorations: {
-		available: true
-	},
-	decorateHandlers: {
-		'disabled': function (val, el, date) {
-			if (val) {
-				el.addClass('disabled');
-			}
+	// Constants used only by the calendar module
+	//
+	.constant('availabilityCalendarConfig', {
+		wrapperTemplate: '<div class="availability-calendar"></div>',
+		prevButtonTemplate: '<a href="" class="availability-calendar-prev-button">&lt;</a>',
+		nextButtonTemplate: '<a href="" class="availability-calendar-next-button">&gt;</a>',
+		titleTemplate: '<div class="availability-calendar-title"></div>',
+		monthSelectTemplate: '<select class="availability-calendar-month-select"></select>',
+		yearSelectTemplate: '<select class="availability-calendar-year-select"></select>',
+		calendarTableTemplate: '<table class="availability-calendar-table"></table>',
+		calendarHeaderTemplate: '<thead></thead>',
+		calendarHeaderRowTemplate: '<tr></tr>',
+		calendarHeaderCellTemplate: '<th></th>',
+		calendarBodyTemplate: '<tbody></tbody>',
+		calendarBodyRowTemplate: '<tr></tr>',
+		calendarBodyCellTemplate: '<td></td>',
+		calendarBodyCellLabelTemplate: '<span class="availability-calendar-day-label"></span>',
+		wrapperLoadingClass: 'loading',
+		disabledDayClass: 'disabled',
+		defaultDayDecorations: {
+			available: true
 		},
-		'available': function (val, el, date) {
-			if (val) {
-				el.addClass('available');
-			}
-		},
-		'class': function (val, el, date) {
-			var c = val;
-			if (angular.isArray(val)) {
-				c = val.join(' ');
-			}
-			if (c) {
-				el.addClass(c);
+		decorateHandlers: {
+			'disabled': function (val, el, date) {
+				if (val) {
+					el.addClass('disabled');
+				}
+			},
+			'available': function (val, el, date) {
+				if (val) {
+					el.addClass('available');
+				}
+			},
+			'class': function (val, el, date) {
+				var c = val;
+				if (angular.isArray(val)) {
+					c = val.join(' ');
+				}
+				if (c) {
+					el.addClass(c);
+				}
 			}
 		}
-	}
-})
+	})
 
-// # availability-date component
-// Requires moment.js and display a monthly calendar that shows availabilty dates.
-.directive('availabilityCalendar', availabilityCalendarDirective);
+	// # availability-date component
+	// Requires moment.js and display a monthly calendar that shows availabilty dates.
+	.directive('availabilityCalendar', availabilityCalendarDirective);
 
 function availabilityCalendarDirective () {
 	return {
@@ -143,6 +146,8 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 	ctrl.parseMoment = parseMoment;
 	ctrl.getDecoratedDays = getDecoratedDays;
 
+	///////////////
+
 	// Calendar options
 
 	var defaultOptions = {};
@@ -187,8 +192,12 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		'$calendar': ctrl
 	});
 
-	// Calendar generation
 
+	/**
+	 * This function generates the calendar
+	 * @param els
+	 * @returns {*}
+	 */
 	function buildCalendar (els) {
 		var weekEl, dayEl;
 		els.calendar
@@ -238,6 +247,12 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return els;
 	}
 
+	/**
+	 * TODO
+	 * @param templateName
+	 * @param optional
+	 * @returns {*}
+	 */
 	function generateElement (templateName, optional) {
 		var templateId = templateName + 'Template';
 		if (!availabilityCalendarConfig[templateId]) {
@@ -251,6 +266,10 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return angular.element(availabilityCalendarConfig[templateId]);
 	}
 
+	/**
+	 * TODO
+	 * @returns {*}
+	 */
 	function generateMonthSelectElement () {
 		var element = generateElement('monthSelect', true);
 		element.on('change', function (event) {
@@ -262,6 +281,10 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return element;
 	}
 
+	/**
+	 * TODO
+	 * @returns {*}
+	 */
 	function generateYearSelectElement () {
 		var element = generateElement('yearSelect', true);
 		element.on('change', function (event) {
@@ -275,6 +298,10 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return element;
 	}
 
+	/**
+	 * TODO
+	 * @returns {Array}
+	 */
 	function addDateEventsFromAttrs () {
 		var result = [];
 		for (var key in $attrs) {
@@ -298,6 +325,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return result;
 	}
 
+	/**
+	 * TODO
+	 * @param name
+	 * @param handler
+	 */
 	function addDateEvent (name, handler) {
 		dateEvents.push({
 			eventName: name,
@@ -313,6 +345,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		});
 	}
 
+	/**
+	 * TODO
+	 * @param eventsObject
+	 * @param day
+	 */
 	function attachEventsToDate (eventsObject, day) {
 		angular.forEach(eventsObject, function (e) {
 			day.on(e.eventName, e.handler);
@@ -320,7 +357,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 	}
 
 	// Calendar update
-
+	/**
+	 * TODO
+	 * @param date
+	 * @returns {*}
+	 */
 	function setMonthDate (date) {
 		if (!date || !parseMoment(date).isValid()) {
 			return;
@@ -331,6 +372,10 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return updateCalendar(startMoment, endMoment);
 	}
 
+	/**
+	 * TODO
+	 * @param date
+	 */
 	function updateCalendarTitle (date) {
 		var dateMoment = parseMoment(date);
 		if (calendarElements.monthSelect) {
@@ -347,6 +392,13 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		}
 	}
 
+	/**
+	 * TODO
+	 * @param startDate
+	 * @param endDate
+	 * @param fetchOptions
+	 * @returns {*}
+	 */
 	function getDecoratedDays (startDate, endDate, fetchOptions) {
 		// assert startMoment < endMoment
 		var fromMoment = startDate ? parseMoment(startDate) : startMoment;
@@ -402,6 +454,13 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		});
 	}
 
+	/**
+	 * TODO
+	 * @param startDate
+	 * @param endDate
+	 * @param fetchOptions
+	 * @returns {*}
+	 */
 	function updateCalendar (startDate, endDate, fetchOptions) {
 		startLoading();
 		return getDecoratedDays(startDate, endDate, fetchOptions)
@@ -414,6 +473,10 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		});
 	}
 
+	/**
+	 * TODO
+	 * @param decorations
+	 */
 	function populateCalendarAfterFetch (decorations) {
 		var weekNumber = 0, weekEl, dayEl, dayLabelEl, dayDate, decorationIndex = 0, decoration;
 		// Empty calendar elements
@@ -479,6 +542,12 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		}
 	}
 
+	/**
+	 * TODO
+	 * @param dayDecorations
+	 * @param dayEl
+	 * @param date
+	 */
 	function applyDecorations (dayDecorations, dayEl, date) {
 		angular.forEach(dayDecorations, function (decorator, name) {
 			if (typeof decorateHandlers[name] !== 'function') {
@@ -490,6 +559,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 
 	// Utility functions
 
+	/**
+	 * TODO
+	 * @param appendTo
+	 * @param position
+	 */
 	function showCalendar (appendTo, position) {
 		var containerElement = appendTo;
 		// Show
@@ -526,6 +600,9 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	function positionCalendarHandler () {
 		var position = positionCalendarHandler.$position;
 		if (!position) {
@@ -552,11 +629,17 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		calendarElements.calendar.css(pos);
 	}
 
+	/**
+	 * TODO
+	 */
 	function hideCalendar () {
 		calendarElements.calendar.remove();
 		angular.element(window).off('resize', positionCalendarHandler);
 	}
 
+	/**
+	 * TODO
+	 */
 	function startLoading () {
 		$animate.addClass(
 			calendarElements.calendar,
@@ -564,6 +647,9 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		);
 	}
 
+	/**
+	 * TODO
+	 */
 	function stopLoading () {
 		$animate.removeClass(
 			calendarElements.calendar,
@@ -571,6 +657,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		);
 	}
 
+	/**
+	 * TODO
+	 * @param event
+	 * @returns {boolean}
+	 */
 	function nextMonth (event) {
 		if (event) {
 			event.preventDefault();
@@ -580,6 +671,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return false;
 	}
 
+	/**
+	 * TODO
+	 * @param event
+	 * @returns {boolean}
+	 */
 	function prevMonth (event) {
 		if (event) {
 			event.preventDefault();
@@ -589,6 +685,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 		return false;
 	}
 
+	/**
+	 * TODO
+	 * @param element
+	 * @returns {{left: number, top: number}}
+	 */
 	function getElementPosition (element) {
 		var el = angular.element(element)[0];
 		var position = {
@@ -605,6 +706,11 @@ function availabilityCalendarController ($scope, $element, $attrs, $q, $animate,
 
 	// Moment utilities
 
+	/**
+	 *
+	 * @param date
+	 * @returns {*}
+	 */
 	function parseMoment (date) {
 		if (angular.isString(date)) {
 			return moment(date,
@@ -627,6 +733,14 @@ availabilityCalendarController.$inject = [
 	'availabilityCalendarConfig'
 ];
 
+
+/**
+ * TODO
+ * @param scope
+ * @param element
+ * @param attrs
+ * @param ctrls
+ */
 function availabilityCalendarLink (scope, element, attrs, ctrls) {
 	var ctrl = ctrls[0];
 	var ngModel = ctrls[1];
